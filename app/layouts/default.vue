@@ -162,6 +162,7 @@ const { confirmLogout } = useConfirmModal()
 const navItems = [
   { to: '/main', icon: 'i-lucide-layout-dashboard', label: 'Panel Principal' },
   { to: '/pulso', icon: 'i-lucide-trending-up', label: 'Punto de Equilibrio & P&L' },
+  { to: '/flujo', icon: 'i-lucide-sparkles', label: 'Flujo Predictivo 13-S (IA)' },
   { to: '/sat', icon: 'i-lucide-file-search', label: 'Auditoría SAT & Proveedores' },
   { to: '/socios', icon: 'i-lucide-users', label: 'Bóveda de Socios & Firmas' }
 ]
