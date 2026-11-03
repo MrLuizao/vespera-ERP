@@ -1,7 +1,21 @@
 <template>
   <div class="max-w-5xl mx-auto">
+    <!-- Botón Nueva Solicitud en Modo Móvil (Arriba del título ocupando ancho total) -->
+    <div class="block sm:hidden mb-4 mt-2">
+      <UButton
+        icon="i-lucide-plus"
+        color="primary"
+        size="xl"
+        block
+        class="w-full justify-center rounded-full cursor-pointer transition-transform active:scale-95 shadow-md py-3.5"
+        @click="openCreateModal"
+      >
+        Nueva Solicitud
+      </UButton>
+    </div>
+
     <!-- Encabezado con estado del usuario autenticado -->
-    <div class="mb-8 mt-5 flex items-center justify-between flex-wrap gap-4">
+    <div class="mb-8 sm:mt-5 flex items-center justify-between flex-wrap gap-4">
       <div class="flex items-center gap-4">
         <div class="w-11 h-11 shrink-0 rounded-full bg-white/60 dark:bg-white/[0.08] backdrop-blur-2xl flex items-center justify-center shadow-sm">
           <UIcon
@@ -30,11 +44,11 @@
           </span>
         </div>
 
-        <!-- Botón para Crear Nueva Solicitud -->
+        <!-- Botón para Crear Nueva Solicitud en Desktop -->
         <UButton
           icon="i-lucide-plus"
           color="primary"
-          class="rounded-full cursor-pointer transition-transform active:scale-95 shadow-sm"
+          class="hidden sm:inline-flex rounded-full cursor-pointer transition-transform active:scale-95 shadow-sm"
           @click="openCreateModal"
         >
           Nueva Solicitud
