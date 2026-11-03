@@ -120,6 +120,64 @@ export interface GovernancePaymentRequest {
   signers: GovernanceSigner[]
 }
 
+export interface WeeklyCashFlowItem {
+  weekNumber: number
+  weekLabel: string
+  startDate: string
+  endDate: string
+  startingCashMxn: number
+  inflows: {
+    reservationsMxn: number
+    walkInSalesMxn: number
+    corporateEventsMxn: number
+    totalInflowsMxn: number
+  }
+  outflows: {
+    payrollMxn: number
+    taxesSatMxn: number
+    socialSecurityImssMxn: number
+    commercialRentMxn: number
+    foodAndBeveragePurchasesMxn: number
+    operatingServicesMxn: number
+    capexApprovedMxn: number
+    totalOutflowsMxn: number
+  }
+  netCashFlowMxn: number
+  endingCashMxn: number
+  minimumSafetyFloorMxn: number
+  stressLevel: 'OPTIMAL' | 'MODERATE' | 'CRITICAL'
+  keyEvents: string[]
+}
+
+export interface CashFlow13WReport {
+  generatedAt: string
+  horizonWeeks: number
+  initialCashMxn: number
+  projectedEndingCashMxn: number
+  netChangeMxn: number
+  safetyFloorThresholdMxn: number
+  criticalPinchWeek: {
+    weekNumber: number
+    weekLabel: string
+    stressLevel: string
+    reason: string
+    projectedEndingCashMxn: number
+  }
+  maximumDistributableDividendMxn: number
+  aiExecutiveSummary: {
+    headline: string
+    riskDiagnosis: string
+    prescriptions: {
+      id: string
+      title: string
+      action: string
+      impactMxn: number
+      category: 'LIQUIDEZ' | 'IMPUESTOS' | 'RESERVAS' | 'DIVIDENDOS'
+    }[]
+  }
+  weeks: WeeklyCashFlowItem[]
+}
+
 export const useCfoStore = defineStore('cfo', {
   state: () => ({
     selectedVenueId: 'all' as VenueId,
@@ -129,6 +187,12 @@ export const useCfoStore = defineStore('cfo', {
     isSyncingReservations: false,
     lastReservationsSync: 'Conectado a Vespera Hub API (En Vivo)',
     reservationFinancials: null as ReservationFinancialData | null,
+
+    // Motor Predictivo de Flujo de Caja 13-Semanas con IA
+    cashFlowForecast: null as CashFlow13WReport | null,
+    isForecastingCashFlow: false,
+    cashFlowDemandMultiplier: 1.0,
+    cashFlowDeferCapex: false,
 
     venues: {
       woodnest: {
@@ -714,6 +778,35 @@ export const useCfoStore = defineStore('cfo', {
           status: 'DETECTED'
         })
       }
+    },
+
+    async fetchCashFlowForecast() {
+      this.isForecastingCashFlow = true
+      try {
+        const response = await $fetch<{ status: string; forecast: CashFlow13WReport }>('/api/cfo/cashflow/forecast', {
+          query: {
+            demandMultiplier: this.cashFlowDemandMultiplier,
+            deferCapex: this.cashFlowDeferCapex
+          }
+        })
+        if (response && response.forecast) {
+          this.cashFlowForecast = response.forecast
+        }
+      } catch (err) {
+        console.warn('[CfoStore] Error al calcular proyección de flujo de caja 13W:', (err as Error).message)
+      } finally {
+        this.isForecastingCashFlow = false
+      }
+    },
+
+    setCashFlowMultiplier(val: number) {
+      this.cashFlowDemandMultiplier = val
+      this.fetchCashFlowForecast()
+    },
+
+    setCashFlowDeferCapex(val: boolean) {
+      this.cashFlowDeferCapex = val
+      this.fetchCashFlowForecast()
     }
   }
 })
