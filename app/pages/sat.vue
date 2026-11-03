@@ -1,21 +1,7 @@
 <template>
   <div class="max-w-5xl mx-auto">
-    <!-- Botón Sincronizar SAT en Modo Móvil (Arriba del título ocupando ancho total) -->
-    <div class="block sm:hidden mb-4 mt-2">
-      <UButton
-        icon="i-lucide-refresh-cw"
-        color="primary"
-        size="xl"
-        block
-        class="w-full justify-center rounded-full cursor-pointer transition-transform active:scale-95 shadow-md py-3.5"
-        @click="handleSyncSat"
-      >
-        Sincronizar SAT
-      </UButton>
-    </div>
-
-    <!-- Encabezado Desktop y Tablet -->
-    <div class="mb-8 sm:mt-5 flex items-center justify-between flex-wrap gap-4">
+    <!-- Encabezado Desktop y Móvil -->
+    <div class="mb-4 sm:mb-8 mt-4 sm:mt-5 flex items-center justify-between flex-wrap gap-4">
       <div class="flex items-center gap-4">
         <div class="w-11 h-11 shrink-0 rounded-full bg-white/60 dark:bg-white/[0.08] backdrop-blur-2xl flex items-center justify-center shadow-sm">
           <UIcon
@@ -39,6 +25,20 @@
         color="primary"
         size="lg"
         class="hidden sm:inline-flex w-auto justify-center rounded-full cursor-pointer transition-transform active:scale-95 shadow-sm"
+        @click="handleSyncSat"
+      >
+        Sincronizar SAT
+      </UButton>
+    </div>
+
+    <!-- Botón Sincronizar SAT en Modo Móvil: DEBAJO del título ocupando ancho total -->
+    <div class="block sm:hidden mb-6">
+      <UButton
+        icon="i-lucide-refresh-cw"
+        color="primary"
+        size="xl"
+        block
+        class="w-full justify-center rounded-full cursor-pointer transition-transform active:scale-95 shadow-md py-3.5"
         @click="handleSyncSat"
       >
         Sincronizar SAT

@@ -1,21 +1,22 @@
 <template>
   <div class="max-w-5xl mx-auto">
-    <!-- Botón Nueva Solicitud en Modo Móvil (Arriba del título ocupando ancho total) -->
-    <div class="block sm:hidden mb-4 mt-2">
-      <UButton
-        icon="i-lucide-plus"
-        color="primary"
-        size="xl"
-        block
-        class="w-full justify-center rounded-full cursor-pointer transition-transform active:scale-95 shadow-md py-3.5"
-        @click="openCreateModal"
-      >
-        Nueva Solicitud
-      </UButton>
+    <!-- Tarjeta de Sesión Activa (Abarcando el ancho total arriba) -->
+    <div class="w-full mt-4 mb-6 px-4 py-3 sm:px-5 sm:py-3.5 rounded-2xl bg-white/60 dark:bg-white/[0.08] backdrop-blur-2xl border border-white/60 dark:border-white/10 shadow-xs flex items-center justify-between flex-wrap gap-2.5">
+      <div class="flex items-center gap-2.5">
+        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+        <span class="text-xs text-sage-600 dark:text-gray-400">Sesión:</span>
+        <strong class="text-sm text-carbon-900 dark:text-white">{{ activeUser.name }}</strong>
+        <span class="text-[11px] px-2.5 py-0.5 rounded-full bg-primary-500/15 text-primary-600 dark:text-[#D4E157] font-semibold">
+          {{ activeUser.role }}
+        </span>
+      </div>
+      <div class="text-xs text-sage-600 dark:text-gray-300 font-medium">
+        Participación Accionaria: <strong class="text-carbon-900 dark:text-white font-mono">{{ activeUser.equityPct }}%</strong>
+      </div>
     </div>
 
-    <!-- Encabezado con estado del usuario autenticado -->
-    <div class="mb-8 sm:mt-5 flex items-center justify-between flex-wrap gap-4">
+    <!-- Encabezado con Título e Icono -->
+    <div class="mb-4 sm:mb-8 flex items-center justify-between flex-wrap gap-4">
       <div class="flex items-center gap-4">
         <div class="w-11 h-11 shrink-0 rounded-full bg-white/60 dark:bg-white/[0.08] backdrop-blur-2xl flex items-center justify-center shadow-sm">
           <UIcon
@@ -33,27 +34,30 @@
         </div>
       </div>
 
-      <div class="flex items-center gap-3">
-        <!-- Badge de Usuario Activo con sesión validada -->
-        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/60 dark:bg-white/[0.08] backdrop-blur-xl border border-white/60 dark:border-white/10 text-xs shadow-xs">
-          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-          <span class="text-sage-600 dark:text-gray-400">Sesión:</span>
-          <strong class="text-carbon-900 dark:text-white">{{ activeUser.name }}</strong>
-          <span class="text-[10px] px-2 py-0.5 rounded-full bg-primary-500/15 text-primary-600 dark:text-[#D4E157] font-semibold">
-            {{ activeUser.role }}
-          </span>
-        </div>
+      <!-- Botón para Crear Nueva Solicitud en Desktop -->
+      <UButton
+        icon="i-lucide-plus"
+        color="primary"
+        size="lg"
+        class="hidden sm:inline-flex rounded-full cursor-pointer transition-transform active:scale-95 shadow-sm"
+        @click="openCreateModal"
+      >
+        Nueva Solicitud
+      </UButton>
+    </div>
 
-        <!-- Botón para Crear Nueva Solicitud en Desktop -->
-        <UButton
-          icon="i-lucide-plus"
-          color="primary"
-          class="hidden sm:inline-flex rounded-full cursor-pointer transition-transform active:scale-95 shadow-sm"
-          @click="openCreateModal"
-        >
-          Nueva Solicitud
-        </UButton>
-      </div>
+    <!-- Botón Nueva Solicitud en Modo Móvil: DEBAJO del título ocupando ancho total -->
+    <div class="block sm:hidden mb-6">
+      <UButton
+        icon="i-lucide-plus"
+        color="primary"
+        size="xl"
+        block
+        class="w-full justify-center rounded-full cursor-pointer transition-transform active:scale-95 shadow-md py-3.5"
+        @click="openCreateModal"
+      >
+        Nueva Solicitud
+      </UButton>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
