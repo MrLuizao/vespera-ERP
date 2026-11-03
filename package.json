@@ -1,0 +1,26 @@
+{
+  "name": "vespera-hub-ERP",
+  "private": true,
+  "type": "module",
+  "packageManager": "yarn@1.22.22",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev --host 0.0.0.0",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@iconify-json/lucide": "^1.2.137",
+    "@iconify-json/simple-icons": "^1.2.97",
+    "@nuxt/ui": "^4.11.2",
+    "@pinia/nuxt": "^1.0.3",
+    "firebase-admin": "^14.5.0",
+    "nuxt": "^4.5.2",
+    "pinia": "^4.1.0",
+    "tailwindcss": "^4.3.3",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.2"
+  }
+}

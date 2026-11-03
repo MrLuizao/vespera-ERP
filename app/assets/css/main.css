@@ -1,0 +1,116 @@
+@import url('https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+@theme static {
+  --font-sans: 'Public Sans', sans-serif;
+
+  /* Azul royal / indigo suave (primary) */
+  --color-royal-50: #EEF1FE;
+  --color-royal-100: #DFE5FD;
+  --color-royal-200: #C5D0FB;
+  --color-royal-300: #9DAFF8;
+  --color-royal-400: #7B74F8;
+  --color-royal-500: #635BFF;
+  --color-royal-600: #4F46E5;
+  --color-royal-700: #4338CA;
+  --color-royal-800: #3730A3;
+  --color-royal-900: #312E81;
+  --color-royal-950: #1E1B4B;
+
+  /* Neutros perlados / slate */
+  --color-sage-50: #F8FAFC;
+  --color-sage-100: #F1F5F9;
+  --color-sage-200: #E2E8F0;
+  --color-sage-300: #CBD5E1;
+  --color-sage-400: #94A3B8;
+  --color-sage-500: #64748B;
+  --color-sage-600: #475569;
+  --color-sage-700: #334155;
+  --color-sage-800: #1E293B;
+  --color-sage-900: #0F172A;
+  --color-sage-950: #090D16;
+
+  /* Amarillo lima / acento de alto contraste */
+  --color-posyellow-300: #E6EE7A;
+  --color-posyellow-400: #D4E157;
+  --color-posyellow-500: #C0CA33;
+
+  /* Esmeralda / Teal suave */
+  --color-posteal-400: #4CD97B;
+  --color-posteal-500: #2FB865;
+  --color-posteal-600: #22964F;
+
+  /* Carbón azulado profundo para modo oscuro */
+  --color-carbon-800: #162032;
+  --color-carbon-900: #0E1525;
+  --color-carbon-950: #070B14;
+}
+
+:root {
+  --ui-border: rgba(15, 23, 42, 0.04);
+  --ui-border-muted: rgba(15, 23, 42, 0.03);
+  --ui-border-accented: rgba(15, 23, 42, 0.06);
+}
+
+.dark {
+  --ui-bg: var(--color-carbon-900);
+  --ui-bg-muted: #111A2E;
+  --ui-bg-elevated: #162032;
+  --ui-bg-accented: #1E2B42;
+
+  --ui-border: rgba(255, 255, 255, 0.04);
+  --ui-border-muted: rgba(255, 255, 255, 0.03);
+  --ui-border-accented: rgba(255, 255, 255, 0.06);
+
+  --ui-text-muted: #94A3B8;
+  --ui-text-dimmed: #64748B;
+}
+
+/* ============================================================================
+   UX MEJORES PRÁCTICAS: CURSORES INTERACTIVOS GLOBALES
+   ============================================================================ */
+button,
+[role="button"],
+a,
+input[type="button"],
+input[type="submit"],
+input[type="reset"] {
+  cursor: pointer;
+}
+
+button:disabled,
+[role="button"][aria-disabled="true"],
+input[type="button"]:disabled,
+input[type="submit"]:disabled,
+input[type="reset"]:disabled {
+  cursor: not-allowed;
+}
+
+/* ============================================================================
+   MESH GRADIENT CON TONOS PARA QUE EL GLASSMORPHISM REFRACTE Y RESALTE
+   ============================================================================ */
+
+/* Modo Claro: Tonos lavanda, durazno cálido, azul cielo y malva suave */
+.glass-mesh-bg {
+  background-color: #DFE3EE;
+  background-image:
+    radial-gradient(at 15% 18%, rgba(165, 180, 252, 0.65) 0px, transparent 52%),
+    radial-gradient(at 88% 15%, rgba(253, 186, 140, 0.60) 0px, transparent 50%),
+    radial-gradient(at 52% 55%, rgba(196, 181, 253, 0.55) 0px, transparent 55%),
+    radial-gradient(at 20% 85%, rgba(251, 207, 232, 0.55) 0px, transparent 50%),
+    radial-gradient(at 82% 82%, rgba(147, 197, 253, 0.55) 0px, transparent 52%);
+  background-attachment: fixed;
+}
+
+/* Modo Oscuro: Tonos azulosos profundos (Azul medianoche, índigo real, cian abisal y zafiro) */
+.dark .glass-mesh-bg {
+  background-color: #070B14;
+  background-image:
+    radial-gradient(at 18% 18%, rgba(37, 99, 235, 0.36) 0px, transparent 52%),
+    radial-gradient(at 85% 20%, rgba(79, 70, 229, 0.30) 0px, transparent 50%),
+    radial-gradient(at 50% 52%, rgba(14, 116, 144, 0.28) 0px, transparent 55%),
+    radial-gradient(at 80% 82%, rgba(59, 130, 246, 0.25) 0px, transparent 52%),
+    radial-gradient(at 15% 85%, rgba(30, 58, 138, 0.40) 0px, transparent 52%);
+  background-attachment: fixed;
+}
