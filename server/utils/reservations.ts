@@ -2,10 +2,12 @@ import { existsSync, readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { getFirestoreReservations } from './firebase'
 
+export type ZoneId = 'terraza' | 'cava' | 'salon-principal'
+
 export interface StoredReservation {
   id: string
   restaurantId: string
-  zoneId: 'terraza' | 'cava' | 'salon-principal'
+  zoneId: ZoneId
   guestName: string
   guestPhone: string
   partySize: number
@@ -20,7 +22,7 @@ export interface StoredReservation {
 }
 
 export interface ZoneMetrics {
-  zoneId: 'terraza' | 'cava' | 'salon-principal'
+  zoneId: ZoneId
   name: string
   capacity: number
   confirmedCovers: number
@@ -36,7 +38,7 @@ export interface ReservationFinancialSummary {
   projectedRevenueMxn: number
   projectedPrimeCostMxn: number
   projectedNetContributionMxn: number
-  zonesBreakdown: Record<string, ZoneMetrics>
+  zonesBreakdown: Record<ZoneId, ZoneMetrics>
   utmAttribution: {
     instagram: { covers: number; revenueMxn: number; pct: number }
     googleMaps: { covers: number; revenueMxn: number; pct: number }
@@ -51,7 +53,7 @@ export interface ReservationFinancialSummary {
   reservations: StoredReservation[]
 }
 
-const ZONE_CONFIG: Record<string, { name: string; capacity: number; averageTicketMxn: number }> = {
+const ZONE_CONFIG: Record<ZoneId, { name: string; capacity: number; averageTicketMxn: number }> = {
   cava: {
     name: 'Cava Privada & Sommelier',
     capacity: 18,
@@ -161,7 +163,7 @@ export async function getLiveReservations(): Promise<{ reservations: StoredReser
 export function calculateReservationFinancials(reservations: StoredReservation[]): ReservationFinancialSummary {
   const confirmed = reservations.filter(r => r.status === 'CONFIRMED' || r.status === 'SEATED')
 
-  const zonesBreakdown: Record<string, ZoneMetrics> = {
+  const zonesBreakdown: Record<ZoneId, ZoneMetrics> = {
     cava: {
       zoneId: 'cava',
       name: ZONE_CONFIG.cava.name,
@@ -229,8 +231,7 @@ export function calculateReservationFinancials(reservations: StoredReservation[]
   }
 
   // Porcentajes de ocupación por zona
-  for (const key of Object.keys(zonesBreakdown)) {
-    const z = zonesBreakdown[key]
+  for (const z of Object.values(zonesBreakdown)) {
     z.occupancyRatePct = z.capacity > 0 ? Math.min(100, Math.round((z.confirmedCovers / z.capacity) * 100)) : 0
   }
 

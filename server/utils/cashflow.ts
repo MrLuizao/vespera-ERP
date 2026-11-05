@@ -1,4 +1,5 @@
-import { getLiveReservations, calculateReservationFinancials } from './reservations'
+import { getLiveReservations, calculateReservationFinancials, type ReservationFinancialSummary } from './reservations'
+import { generateExecutiveSummary, type AiCashFlowContext, type AiExecutiveSummary } from './ai'
 
 export interface WeeklyCashFlowItem {
   weekNumber: number
@@ -44,18 +45,34 @@ export interface CashFlow13WReport {
     projectedEndingCashMxn: number
   }
   maximumDistributableDividendMxn: number
-  aiExecutiveSummary: {
-    headline: string
-    riskDiagnosis: string
-    prescriptions: {
-      id: string
-      title: string
-      action: string
-      impactMxn: number
-      category: 'LIQUIDEZ' | 'IMPUESTOS' | 'RESERVAS' | 'DIVIDENDOS'
-    }[]
-  }
+  aiExecutiveSummary: AiExecutiveSummary
   weeks: WeeklyCashFlowItem[]
+}
+
+/** Construye el contexto para el LLM a partir de las reservas en vivo (sin PII de clientes). */
+function buildLiveDemandContext(
+  source: 'CLOUDFIRESTORE' | 'LOCAL_CACHE',
+  financials: ReservationFinancialSummary
+): AiCashFlowContext['liveDemand'] {
+  const occupancyPctByZone: Record<string, number> = {}
+  for (const [key, zone] of Object.entries(financials.zonesBreakdown)) {
+    occupancyPctByZone[`${key} (${zone.name})`] = zone.occupancyRatePct
+  }
+
+  const channels = Object.entries(financials.utmAttribution)
+    .map(([channel, data]) => ({ channel, revenueMxn: data.revenueMxn, pct: data.pct }))
+    .sort((a, b) => b.revenueMxn - a.revenueMxn)
+
+  return {
+    source,
+    confirmedTables: financials.totalConfirmedTables,
+    confirmedCovers: financials.totalConfirmedCovers,
+    projectedRevenueMxn: Math.round(financials.projectedRevenueMxn),
+    projectedNetContributionMxn: Math.round(financials.projectedNetContributionMxn),
+    revpashMxn: financials.revpash.revpashMxn,
+    occupancyPctByZone,
+    topRevenueChannel: channels[0] ?? null
+  }
 }
 
 export async function calculate13WeekCashFlow(scenarioModifiers?: {
@@ -66,7 +83,7 @@ export async function calculate13WeekCashFlow(scenarioModifiers?: {
   const deferCapex = scenarioModifiers?.deferCapex ?? false
 
   // Obtener datos de reservaciones en vivo desde Firestore
-  const { reservations } = await getLiveReservations()
+  const { reservations, source } = await getLiveReservations()
   const liveFinancials = calculateReservationFinancials(reservations)
 
   const initialCash = 1850000 // $1,850,000 MXN en bancos
@@ -370,6 +387,28 @@ export async function calculate13WeekCashFlow(scenarioModifiers?: {
   const surplusAboveFloorAtLowest = lowestCashPoint - safetyFloor
   const maxSafeDividend = Math.max(0, Math.floor(surplusAboveFloorAtLowest * 0.7 / 10000) * 10000)
 
+  const pinchReason = 'Confluencia obligatoria de Aguinaldos LFT, Nómina Quincenal y Pagos Provisionales SAT/IMSS.'
+
+  // Resumen ejecutivo real con Gemini (contexto: proyección + demanda Firestore en vivo).
+  // Nunca lanza: ante cualquier fallo, server/utils/ai.ts devuelve el fallback determinista.
+  const aiExecutiveSummary = await generateExecutiveSummary({
+    scenario: { demandMultiplier: multiplier, deferCapex },
+    initialCashMxn: initialCash,
+    safetyFloorMxn: safetyFloor,
+    lowestCashMxn: lowestCashPoint,
+    maxSafeDividendMxn: maxSafeDividend,
+    criticalPinch: { weekLabel: pinchWeekData.weekLabel, reason: pinchReason },
+    weeks: calculatedWeeks.map(week => ({
+      weekLabel: week.weekLabel,
+      inflowsMxn: week.inflows.totalInflowsMxn,
+      outflowsMxn: week.outflows.totalOutflowsMxn,
+      endingCashMxn: week.endingCashMxn,
+      stressLevel: week.stressLevel,
+      keyEvents: week.keyEvents
+    })),
+    liveDemand: buildLiveDemandContext(source, liveFinancials)
+  })
+
   return {
     generatedAt: new Date().toISOString(),
     horizonWeeks: 13,
@@ -381,39 +420,11 @@ export async function calculate13WeekCashFlow(scenarioModifiers?: {
       weekNumber: pinchWeekData.weekNumber,
       weekLabel: pinchWeekData.weekLabel,
       stressLevel: lowestCashPoint < safetyFloor ? 'CRÍTICO' : 'MODERADO',
-      reason: 'Confluencia obligatoria de Aguinaldos LFT, Nómina Quincenal y Pagos Provisionales SAT/IMSS.',
+      reason: pinchReason,
       projectedEndingCashMxn: lowestCashPoint
     },
     maximumDistributableDividendMxn: maxSafeDividend,
-    aiExecutiveSummary: {
-      headline: lowestCashPoint > safetyFloor
-        ? 'Liquidez Operativa Blindada: Flujo positivo con resiliencia ante obligaciones fiscales de fin de año.'
-        : 'Alerta Preventiva de Tensión: La confluencia de aguinaldos y SAT en Semana 7 requiere anticipar depósitos de eventos.',
-      riskDiagnosis: `A lo largo de las 13 semanas proyectadas, el punto de máxima exigencia de caja ocurrirá en ${pinchWeekData.weekLabel}, donde la liquidez alcanzará su valle proyectado en $${lowestCashPoint.toLocaleString('es-MX')} MXN. El piso de maniobra ($400,000 MXN) se mantiene ${lowestCashPoint >= safetyFloor ? 'protegido con un colchón de $' + (lowestCashPoint - safetyFloor).toLocaleString('es-MX') + ' MXN' : 'comprometido por déficit temporal'}.`,
-      prescriptions: [
-        {
-          id: 'rx-1',
-          title: 'Anticipos de Cenas Corporativas (Diciembre)',
-          action: 'Exigir depósito de garantía no reembolsable del 50% en las 14 reservas de grupos corporativos durante Semanas 4 y 5.',
-          impactMxn: 185000,
-          category: 'RESERVAS'
-        },
-        {
-          id: 'rx-2',
-          title: 'Programación PPD Proveedores Destilados',
-          action: 'Diferir el pago de facturas PPD de cavas y destilados con crédito pactado a 30 días para liberar flujo en Semana 7.',
-          impactMxn: 120000,
-          category: 'LIQUIDEZ'
-        },
-        {
-          id: 'rx-3',
-          title: 'Tope Máximo de Dividendos Sugerido',
-          action: `No distribuir más de $${maxSafeDividend.toLocaleString('es-MX')} MXN a socios antes del cierre de Año Nuevo (Semana 9) para preservar el capital de trabajo.`,
-          impactMxn: maxSafeDividend,
-          category: 'DIVIDENDOS'
-        }
-      ]
-    },
+    aiExecutiveSummary,
     weeks: calculatedWeeks
   }
 }

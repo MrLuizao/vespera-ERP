@@ -43,6 +43,15 @@ export interface PartnerProfile {
   status: 'VOTED' | 'PENDING'
 }
 
+/** Análisis fiscal generado por IA (Gemini) — ver spec specs/sat-ai-audit.md. */
+export interface SatAiAnalysis {
+  plainExplanation: string
+  fiscalRisk: string
+  recommendedAction: string
+  confidencePct: number
+  legalReference: string
+}
+
 export interface SatXmlAnomaly {
   id: string
   venueId: Exclude<VenueId, 'all'>
@@ -60,6 +69,7 @@ export interface SatXmlAnomaly {
   pctIncrease?: number
   monthlyImpactMxn: number
   status: 'DETECTED' | 'BLOCKED' | 'ACCEPTED'
+  aiAnalysis?: SatAiAnalysis | null
 }
 
 export interface ZoneReservationMetric {
@@ -184,6 +194,11 @@ export const useCfoStore = defineStore('cfo', {
     selectedPartnerId: 'luis',
     isScanningSat: false,
     lastSatSync: 'Hace 8 min · 184 XMLs CFDI 4.0 procesados',
+    // Estado de la última sincronización con análisis IA (spec sat-ai-audit §3)
+    satAiSynced: false,
+    satAiAvailable: false,
+    satAiModel: null as string | null,
+    satXmlCount: 184,
     isSyncingReservations: false,
     lastReservationsSync: 'Conectado a Vespera Hub API (En Vivo)',
     reservationFinancials: null as ReservationFinancialData | null,
@@ -759,24 +774,55 @@ export const useCfoStore = defineStore('cfo', {
       })
     },
 
-    addSimulatedSatAnomaly() {
-      this.lastSatSync = 'Justo ahora · 185 XMLs CFDI 4.0 auditados'
-      const exists = this.satAnomalies.some(a => a.id === 'sat-live-4')
-      if (!exists) {
-        this.satAnomalies.unshift({
-          id: 'sat-live-4',
-          venueId: 'woodnest',
-          venueName: 'WoodNest · Town Square',
-          supplierName: 'Comercializadora Lácteos y Quesos Artesanales',
-          supplierRfc: 'CLQ1902115M4',
-          cfdiFolio: 'CFDI-9920X',
-          date: 'Recién detectado en SAT',
-          category: 'GASTO_ATIPICO',
-          title: 'Factura duplicada mismo importe en menos de 48h',
-          detail: 'Dos CFDIs emitidos por $12,600 MXN con los mismos lotes de Burrata e insumos importados.',
-          monthlyImpactMxn: 12600,
-          status: 'DETECTED'
+    /**
+     * Sincronización real: llama a GET /api/cfo/sat/audit, que manda los
+     * registros CFDI a Gemini y devuelve `aiAnalysis` por anomalía (o null si
+     * la IA no está disponible → se conserva el detalle estático, spec §3).
+     * Preserva las decisiones del usuario (BLOCKED/ACCEPTED) por id.
+     * @returns true si la sincronización completó, false si el fetch falló.
+     */
+    async fetchSatAudit(): Promise<boolean> {
+      if (this.isScanningSat) return false
+      this.isScanningSat = true
+      try {
+        const response = await $fetch<{
+          status: string
+          aiModel: string | null
+          aiAvailable: boolean
+          syncedAt: string
+          xmlCount: number
+          anomalies: Array<SatXmlAnomaly & { initialStatus?: 'DETECTED' | 'BLOCKED' }>
+        }>('/api/cfo/sat/audit')
+
+        const previousDecisions = new Map(
+          this.satAnomalies
+            .filter(a => a.status === 'BLOCKED' || a.status === 'ACCEPTED')
+            .map(a => [a.id, a.status] as const)
+        )
+
+        this.satAnomalies = response.anomalies.map(record => ({
+          ...record,
+          status: previousDecisions.get(record.id)
+            ?? (record.initialStatus === 'BLOCKED' ? 'BLOCKED' : 'DETECTED')
+        }))
+
+        this.satAiSynced = true
+        this.satAiAvailable = response.aiAvailable
+        this.satAiModel = response.aiModel
+        this.satXmlCount = response.xmlCount
+        const syncTime = new Date(response.syncedAt).toLocaleTimeString('es-MX', {
+          hour: '2-digit',
+          minute: '2-digit'
         })
+        this.lastSatSync = `Justo ahora (${syncTime}) · ${response.xmlCount} XMLs CFDI 4.0 auditados${
+          response.aiAvailable ? ' con Análisis IA' : ''
+        }`
+        return true
+      } catch (err) {
+        console.warn('[SatAudit] Sincronización falló:', (err as Error).message)
+        return false
+      } finally {
+        this.isScanningSat = false
       }
     },
 

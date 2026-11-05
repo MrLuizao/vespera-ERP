@@ -1,16 +1,16 @@
 <template>
-  <div class="max-w-6xl mx-auto space-y-6">
+  <div class="space-y-6 min-w-0">
     <!-- Encabezado Principal -->
     <div class="mt-4 mb-2 flex flex-col md:flex-row md:items-center justify-between gap-4">
       <div class="flex items-center gap-4">
-        <div class="w-12 h-12 shrink-0 rounded-2xl bg-white/60 dark:bg-white/[0.08] backdrop-blur-2xl flex items-center justify-center shadow-sm">
+        <div class="w-11 h-11 shrink-0 icon-tile flex items-center justify-center">
           <UIcon
             name="i-lucide-sparkles"
-            class="w-6 h-6 text-primary-500 dark:text-[#D4E157]"
+            class="w-5 h-5 text-primary"
           />
         </div>
         <div>
-          <div class="flex items-center gap-2">
+          <div class="flex flex-wrap items-center gap-2">
             <h1 class="text-3xl sm:text-4xl font-bold text-carbon-900 dark:text-white tracking-tight">
               Flujo Predictivo 13-S
             </h1>
@@ -41,12 +41,11 @@
     </div>
 
     <!-- Barra de Simulación "What-If" interactiva -->
-    <div class="rounded-[2rem] p-6 bg-white/60 dark:bg-white/[0.07] backdrop-blur-2xl shadow-lg border border-black/[0.03] dark:border-white/[0.05]">
+    <div class="glass-panel p-5 sm:p-6">
       <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
         <div class="space-y-1">
           <div class="flex items-center gap-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-            <span class="text-xs font-bold uppercase tracking-wider text-primary-600 dark:text-[#D4E157]">
+            <span class="text-sm font-semibold text-primary">
               Simulador de Liquidez "What-If"
             </span>
           </div>
@@ -60,10 +59,11 @@
 
         <div class="flex flex-wrap items-center gap-3">
           <!-- Selector de Escenario de Demanda -->
-          <div class="flex items-center gap-1 p-1 bg-white/80 dark:bg-black/30 rounded-xl border border-black/[0.04] dark:border-white/[0.06]">
+          <div class="flex flex-wrap items-center gap-1 p-1 bg-muted rounded-xl" role="group" aria-label="Escenario de demanda">
             <button
               type="button"
               @click="cfoStore.setCashFlowMultiplier(0.85)"
+              :aria-pressed="cfoStore.cashFlowDemandMultiplier === 0.85"
               :class="cfoStore.cashFlowDemandMultiplier === 0.85 ? 'bg-amber-500/20 text-amber-700 dark:text-amber-300 font-bold border border-amber-500/30' : 'text-sage-600 dark:text-gray-300 hover:text-carbon-900 dark:hover:text-white'"
               class="cursor-pointer px-3 py-1.5 rounded-lg text-xs transition-all"
             >
@@ -72,7 +72,8 @@
             <button
               type="button"
               @click="cfoStore.setCashFlowMultiplier(1.0)"
-              :class="cfoStore.cashFlowDemandMultiplier === 1.0 ? 'bg-primary-500/20 text-primary-800 dark:text-[#D4E157] font-bold border border-primary-500/30' : 'text-sage-600 dark:text-gray-300 hover:text-carbon-900 dark:hover:text-white'"
+              :aria-pressed="cfoStore.cashFlowDemandMultiplier === 1.0"
+              :class="cfoStore.cashFlowDemandMultiplier === 1.0 ? 'status-success font-bold border border-primary' : 'text-muted hover:text-highlighted'"
               class="cursor-pointer px-3 py-1.5 rounded-lg text-xs transition-all"
             >
               Base (100%)
@@ -80,6 +81,7 @@
             <button
               type="button"
               @click="cfoStore.setCashFlowMultiplier(1.2)"
+              :aria-pressed="cfoStore.cashFlowDemandMultiplier === 1.2"
               :class="cfoStore.cashFlowDemandMultiplier === 1.2 ? 'bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 font-bold border border-emerald-500/30' : 'text-sage-600 dark:text-gray-300 hover:text-carbon-900 dark:hover:text-white'"
               class="cursor-pointer px-3 py-1.5 rounded-lg text-xs transition-all"
             >
@@ -91,7 +93,8 @@
           <button
             type="button"
             @click="cfoStore.setCashFlowDeferCapex(!cfoStore.cashFlowDeferCapex)"
-            :class="cfoStore.cashFlowDeferCapex ? 'bg-indigo-600 text-white font-bold shadow-md shadow-indigo-500/25' : 'bg-white/80 dark:bg-black/30 text-carbon-800 dark:text-gray-200 hover:bg-black/5 dark:hover:bg-white/10'"
+            :aria-pressed="cfoStore.cashFlowDeferCapex"
+            :class="cfoStore.cashFlowDeferCapex ? 'bg-royal-500 text-carbon-950 font-bold' : 'bg-elevated text-default hover:bg-muted'"
             class="cursor-pointer px-3.5 py-2 rounded-xl text-xs flex items-center gap-2 border border-black/[0.04] dark:border-white/[0.06] transition-all"
           >
             <UIcon :name="cfoStore.cashFlowDeferCapex ? 'i-lucide-check-circle-2' : 'i-lucide-clock'" class="w-4 h-4" />
@@ -104,17 +107,17 @@
     <!-- 4 Tarjetas de Liquidez Ejecutiva -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
       <!-- Saldo Inicial en Bancos -->
-      <div class="rounded-[2rem] p-6 bg-white/60 dark:bg-white/[0.07] backdrop-blur-2xl shadow-lg border border-black/[0.02] dark:border-white/[0.04]">
+      <div class="glass-panel min-w-0 p-5 sm:p-6">
         <div class="flex items-start justify-between gap-3">
           <div>
-            <p class="text-xs font-semibold text-sage-600 dark:text-gray-300 uppercase tracking-wider mb-1">
+            <p class="text-sm font-medium text-muted mb-1">
               Saldo Actual en Bancos
             </p>
-            <p class="text-2xl sm:text-3xl font-bold tracking-tight text-carbon-900 dark:text-white font-mono">
+            <p class="text-[28px] font-semibold tracking-tight text-highlighted tabular-nums">
               {{ formatCurrency(cfoStore.cashFlowForecast?.initialCashMxn || 1850000) }}
             </p>
           </div>
-          <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#8B80F9] to-[#6C5CE7] flex items-center justify-center shrink-0 shadow-md shadow-indigo-500/20">
+          <div class="w-10 h-10 icon-tile flex items-center justify-center shrink-0">
             <UIcon name="i-lucide-wallet" class="w-5 h-5 text-white" />
           </div>
         </div>
@@ -124,57 +127,57 @@
       </div>
 
       <!-- Saldo Proyectado Semana 13 -->
-      <div class="rounded-[2rem] p-6 bg-white/60 dark:bg-white/[0.07] backdrop-blur-2xl shadow-lg border border-black/[0.02] dark:border-white/[0.04]">
+      <div class="glass-panel min-w-0 p-5 sm:p-6">
         <div class="flex items-start justify-between gap-3">
           <div>
-            <p class="text-xs font-semibold text-sage-600 dark:text-gray-300 uppercase tracking-wider mb-1">
+            <p class="text-sm font-medium text-muted mb-1">
               Saldo Proyectado Sem 13
             </p>
-            <p class="text-2xl sm:text-3xl font-bold tracking-tight font-mono" :class="(cfoStore.cashFlowForecast?.netChangeMxn || 0) >= 0 ? 'text-carbon-900 dark:text-[#D4E157]' : 'text-carbon-900 dark:text-white'">
+            <p class="text-[28px] font-semibold tracking-tight tabular-nums text-highlighted">
               {{ formatCurrency(cfoStore.cashFlowForecast?.projectedEndingCashMxn || 1773500) }}
             </p>
           </div>
-          <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#4CD97B] to-[#2BB656] flex items-center justify-center shrink-0 shadow-md shadow-emerald-500/20">
+          <div class="w-10 h-10 icon-tile flex items-center justify-center shrink-0">
             <UIcon name="i-lucide-trending-up" class="w-5 h-5 text-white" />
           </div>
         </div>
-        <p class="text-xs mt-3 font-semibold" :class="(cfoStore.cashFlowForecast?.netChangeMxn || 0) >= 0 ? 'text-emerald-600 dark:text-[#D4E157]' : 'text-amber-600 dark:text-amber-400'">
+        <p class="text-sm mt-3 font-semibold" :class="(cfoStore.cashFlowForecast?.netChangeMxn || 0) >= 0 ? 'text-primary' : 'text-[var(--warning-text)]'">
           {{ (cfoStore.cashFlowForecast?.netChangeMxn || 0) >= 0 ? '↑ Ganancia Neta' : '↓ Delta Neto' }} {{ formatCurrency(cfoStore.cashFlowForecast?.netChangeMxn || -76500) }}
         </p>
       </div>
 
       <!-- Semana de Mayor Tensión -->
-      <div class="rounded-[2rem] p-6 bg-white/60 dark:bg-white/[0.07] backdrop-blur-2xl shadow-lg border border-black/[0.02] dark:border-white/[0.04]">
+      <div class="glass-panel min-w-0 p-5 sm:p-6">
         <div class="flex items-start justify-between gap-3">
           <div>
-            <p class="text-xs font-semibold text-sage-600 dark:text-gray-300 uppercase tracking-wider mb-1">
+            <p class="text-sm font-medium text-muted mb-1">
               Semana Mayor Tensión
             </p>
             <p class="text-xl sm:text-2xl font-bold tracking-tight text-carbon-900 dark:text-white">
               {{ cfoStore.cashFlowForecast?.criticalPinchWeek?.weekLabel || 'Sem 7 (Dic 14 - 20)' }}
             </p>
           </div>
-          <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#FF9F43] to-[#EE5253] flex items-center justify-center shrink-0 shadow-md shadow-rose-500/20">
+          <div class="w-10 h-10 icon-tile flex items-center justify-center shrink-0">
             <UIcon name="i-lucide-alert-triangle" class="w-5 h-5 text-white" />
           </div>
         </div>
         <p class="text-xs mt-3 text-sage-600 dark:text-gray-300">
-          Valle de caja: <span class="font-bold font-mono text-amber-600 dark:text-amber-300">{{ formatCurrency(cfoStore.cashFlowForecast?.criticalPinchWeek?.projectedEndingCashMxn || 1538500) }}</span>
+          Valle de caja: <span class="font-semibold tabular-nums text-[var(--warning-text)]">{{ formatCurrency(cfoStore.cashFlowForecast?.criticalPinchWeek?.projectedEndingCashMxn || 1538500) }}</span>
         </p>
       </div>
 
       <!-- Dividendo Máximo Seguro -->
-      <div class="rounded-[2rem] p-6 bg-white/60 dark:bg-white/[0.07] backdrop-blur-2xl shadow-lg border border-black/[0.02] dark:border-white/[0.04]">
+      <div class="glass-panel min-w-0 p-5 sm:p-6">
         <div class="flex items-start justify-between gap-3">
           <div>
-            <p class="text-xs font-semibold text-sage-600 dark:text-gray-300 uppercase tracking-wider mb-1">
+            <p class="text-sm font-medium text-muted mb-1">
               Dividendo Seguro Máximo
             </p>
-            <p class="text-2xl sm:text-3xl font-bold tracking-tight text-carbon-900 dark:text-white font-mono">
+            <p class="text-[28px] font-semibold tracking-tight text-highlighted tabular-nums">
               {{ formatCurrency(cfoStore.cashFlowForecast?.maximumDistributableDividendMxn || 790000) }}
             </p>
           </div>
-          <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#00D2D3] to-[#01A3A4] flex items-center justify-center shrink-0 shadow-md shadow-cyan-500/20">
+          <div class="w-10 h-10 icon-tile flex items-center justify-center shrink-0">
             <UIcon name="i-lucide-shield-check" class="w-5 h-5 text-white" />
           </div>
         </div>
@@ -184,101 +187,15 @@
       </div>
     </div>
 
-    <!-- Tarjeta Diagnóstico Predictivo Copilot (IA) -->
-    <UCard
-      class="rounded-[2rem] border border-black/[0.03] dark:border-white/[0.05]"
-      :ui="{ root: 'bg-white/60 dark:bg-white/[0.07] backdrop-blur-2xl ring-0 divide-y-0 shadow-lg', header: 'p-6 sm:px-7 sm:pt-7 sm:pb-0', body: 'p-6 sm:p-7' }"
-    >
-      <template #header>
-        <div class="flex items-center justify-between flex-wrap gap-3">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#8B80F9] to-[#6C5CE7] flex items-center justify-center shadow-md shadow-indigo-500/20">
-              <UIcon name="i-lucide-bot" class="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <div class="flex items-center gap-2">
-                <p class="font-bold text-carbon-900 dark:text-white">
-                  Diagnóstico Predictivo CFO Copilot
-                </p>
-                <UBadge color="primary" variant="soft" size="xs" class="font-bold">
-                  IA GENERATIVA ACTIVA
-                </UBadge>
-              </div>
-              <p class="text-xs text-sage-600 dark:text-gray-300">
-                Análisis automatizado de confluencia fiscal, compromisos laborales y colchón de maniobra.
-              </p>
-            </div>
-          </div>
-
-          <div class="text-xs text-sage-600 dark:text-gray-400">
-            Actualizado: Nov 2026
-          </div>
-        </div>
-      </template>
-
-      <div class="space-y-6">
-        <!-- Titular & Diagnóstico -->
-        <div class="p-5 rounded-2xl bg-primary-500/10 dark:bg-[#D4E157]/10 border border-primary-500/20 dark:border-[#D4E157]/20">
-          <p class="text-sm font-bold text-carbon-900 dark:text-white">
-            {{ cfoStore.cashFlowForecast?.aiExecutiveSummary?.headline || 'Liquidez Operativa Blindada: Flujo positivo con resiliencia ante obligaciones fiscales de fin de año.' }}
-          </p>
-          <p class="text-xs text-sage-700 dark:text-gray-200 mt-2 leading-relaxed">
-            {{ cfoStore.cashFlowForecast?.aiExecutiveSummary?.riskDiagnosis || 'A lo largo de las 13 semanas proyectadas, el punto de máxima exigencia de caja ocurrirá en Sem 7 (Dic 14 - Dic 20), donde la liquidez alcanzará su valle proyectado en $1,538,500 MXN. El piso de maniobra ($400,000 MXN) se mantiene protegido.' }}
-          </p>
-        </div>
-
-        <!-- 3 Prescripciones de Alto Impacto -->
-        <div>
-          <p class="text-xs font-bold uppercase tracking-wider text-sage-600 dark:text-gray-300 mb-3">
-            Prescripciones Tácticas Sugeridas por el Motor Predictivo
-          </p>
-
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div
-              v-for="rx in (cfoStore.cashFlowForecast?.aiExecutiveSummary?.prescriptions || [])"
-              :key="rx.id"
-              class="rounded-2xl p-4 bg-white/50 dark:bg-black/25 border border-black/[0.04] dark:border-white/[0.05] flex flex-col justify-between space-y-3"
-            >
-              <div>
-                <div class="flex items-center justify-between mb-2">
-                  <UBadge
-                    :color="rx.category === 'RESERVAS' ? 'primary' : rx.category === 'IMPUESTOS' ? 'warning' : 'neutral'"
-                    variant="subtle"
-                    size="xs"
-                    class="font-bold"
-                  >
-                    {{ rx.category }}
-                  </UBadge>
-                  <span class="font-mono text-xs font-bold text-emerald-600 dark:text-[#D4E157]">
-                    +{{ formatCurrency(rx.impactMxn) }}
-                  </span>
-                </div>
-                <p class="text-sm font-bold text-carbon-900 dark:text-white">
-                  {{ rx.title }}
-                </p>
-                <p class="text-xs text-sage-600 dark:text-gray-300 mt-1 leading-relaxed">
-                  {{ rx.action }}
-                </p>
-              </div>
-              <div class="pt-2 border-t border-black/[0.04] dark:border-white/[0.05] flex items-center justify-between">
-                <span class="text-[11px] text-sage-600 dark:text-gray-400">Impacto en liquidez</span>
-                <span class="text-xs font-semibold text-carbon-900 dark:text-white">Semana 4 - 7</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </UCard>
-
     <!-- Matriz Desglosada de 13 Semanas -->
     <UCard
-      class="rounded-[2rem] border border-black/[0.03] dark:border-white/[0.05]"
-      :ui="{ root: 'bg-white/60 dark:bg-white/[0.07] backdrop-blur-2xl ring-0 divide-y-0 shadow-lg', header: 'p-6 sm:px-7 sm:pt-7 sm:pb-3', body: 'p-0 overflow-hidden' }"
+      class="forecast-table min-w-0"
+      :ui="{ root: 'glass-panel ring-0 divide-y-0', header: 'p-5 sm:p-6', body: 'p-0 overflow-hidden' }"
     >
       <template #header>
         <div class="flex items-center justify-between flex-wrap gap-2">
           <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#67B8F7] to-[#3B9AE8] flex items-center justify-center shadow-md shadow-sky-500/20">
+            <div class="w-10 h-10 icon-tile flex items-center justify-center">
               <UIcon name="i-lucide-calendar" class="w-5 h-5 text-white" />
             </div>
             <div>
@@ -298,18 +215,19 @@
         </div>
       </template>
 
-      <div class="overflow-x-auto">
+      <p class="px-5 pb-3 text-sm text-muted">Desplaza horizontalmente para consultar todas las columnas.</p>
+      <div class="table-scroll" tabindex="0" role="region" aria-label="Flujo de caja: proyección de 13 semanas">
         <table class="w-full text-left border-collapse text-xs">
           <thead>
             <tr class="border-b border-black/[0.06] dark:border-white/[0.06] bg-black/[0.02] dark:bg-white/[0.02]">
-              <th class="py-3 px-4 font-semibold text-sage-600 dark:text-gray-300 uppercase tracking-wider">Semana / Periodo</th>
-              <th class="py-3 px-4 font-semibold text-sage-600 dark:text-gray-300 uppercase tracking-wider">Saldo Inicial</th>
-              <th class="py-3 px-4 font-semibold text-sage-600 dark:text-gray-300 uppercase tracking-wider">Entradas (+)</th>
-              <th class="py-3 px-4 font-semibold text-sage-600 dark:text-gray-300 uppercase tracking-wider">Salidas (-)</th>
-              <th class="py-3 px-4 font-semibold text-sage-600 dark:text-gray-300 uppercase tracking-wider">Flujo Neto</th>
-              <th class="py-3 px-4 font-semibold text-sage-600 dark:text-gray-300 uppercase tracking-wider">Saldo Final</th>
-              <th class="py-3 px-4 font-semibold text-sage-600 dark:text-gray-300 uppercase tracking-wider">Estrés</th>
-              <th class="py-3 px-4 font-semibold text-sage-600 dark:text-gray-300 uppercase tracking-wider">Eventos Clave</th>
+              <th scope="col" class="py-3 px-4 font-semibold text-muted">Semana / Periodo</th>
+              <th scope="col" class="py-3 px-4 font-semibold text-muted">Saldo Inicial</th>
+              <th scope="col" class="py-3 px-4 font-semibold text-muted">Entradas (+)</th>
+              <th scope="col" class="py-3 px-4 font-semibold text-muted">Salidas (-)</th>
+              <th scope="col" class="py-3 px-4 font-semibold text-muted">Flujo Neto</th>
+              <th scope="col" class="py-3 px-4 font-semibold text-muted">Saldo Final</th>
+              <th scope="col" class="py-3 px-4 font-semibold text-muted">Estrés</th>
+              <th scope="col" class="py-3 px-4 font-semibold text-muted">Eventos Clave</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-black/[0.04] dark:divide-white/[0.04]">
@@ -324,33 +242,33 @@
                 <div class="font-bold text-carbon-900 dark:text-white">
                   Sem {{ w.weekNumber }}
                 </div>
-                <div class="text-[11px] text-sage-600 dark:text-gray-400">
+                <div class="text-xs text-muted">
                   {{ w.startDate }} a {{ w.endDate }}
                 </div>
               </td>
 
               <!-- Saldo Inicial -->
-              <td class="py-3.5 px-4 font-mono text-carbon-800 dark:text-gray-200 whitespace-nowrap">
+              <td class="py-3.5 px-4 tabular-nums text-default whitespace-nowrap">
                 {{ formatCurrency(w.startingCashMxn) }}
               </td>
 
               <!-- Entradas -->
-              <td class="py-3.5 px-4 font-mono font-semibold text-emerald-600 dark:text-[#D4E157] whitespace-nowrap">
+              <td class="py-3.5 px-4 tabular-nums font-semibold text-primary whitespace-nowrap">
                 +{{ formatCurrency(w.inflows.totalInflowsMxn) }}
               </td>
 
               <!-- Salidas -->
-              <td class="py-3.5 px-4 font-mono font-semibold text-error-600 dark:text-error-400 whitespace-nowrap">
+              <td class="py-3.5 px-4 tabular-nums font-semibold text-[var(--attention-text)] whitespace-nowrap">
                 -{{ formatCurrency(w.outflows.totalOutflowsMxn) }}
               </td>
 
               <!-- Flujo Neto -->
-              <td class="py-3.5 px-4 font-mono font-bold whitespace-nowrap" :class="w.netCashFlowMxn >= 0 ? 'text-emerald-600 dark:text-[#D4E157]' : 'text-error-600 dark:text-error-400'">
+              <td class="py-3.5 px-4 tabular-nums font-bold whitespace-nowrap" :class="w.netCashFlowMxn >= 0 ? 'text-primary' : 'text-error-600 dark:text-error-400'">
                 {{ w.netCashFlowMxn >= 0 ? '+' : '' }}{{ formatCurrency(w.netCashFlowMxn) }}
               </td>
 
               <!-- Saldo Final -->
-              <td class="py-3.5 px-4 font-mono font-bold text-carbon-900 dark:text-white whitespace-nowrap">
+              <td class="py-3.5 px-4 tabular-nums font-bold text-highlighted whitespace-nowrap">
                 {{ formatCurrency(w.endingCashMxn) }}
               </td>
 
@@ -372,8 +290,8 @@
                   <span
                     v-for="(event, idx) in w.keyEvents"
                     :key="idx"
-                    :class="event.includes('Aguinaldos') ? 'bg-amber-500/20 text-amber-800 dark:text-amber-300 border-amber-500/30' : event.includes('SAT') ? 'bg-rose-500/20 text-rose-800 dark:text-rose-300 border-rose-500/30' : event.includes('Nómina') ? 'bg-blue-500/20 text-blue-800 dark:text-blue-300 border-blue-500/30' : 'bg-black/5 dark:bg-white/10 text-carbon-700 dark:text-gray-300'"
-                    class="px-2 py-0.5 rounded text-[10px] font-semibold border border-transparent whitespace-nowrap"
+                    :class="event.includes('Aguinaldos') ? 'status-warning' : event.includes('SAT') ? 'status-attention' : event.includes('Nómina') ? 'status-success' : 'bg-muted text-default'"
+                    class="px-2 py-1 rounded-lg text-xs font-semibold whitespace-nowrap"
                   >
                     {{ event }}
                   </span>
@@ -384,6 +302,7 @@
         </table>
       </div>
     </UCard>
+    <CashFlowAnalysis />
   </div>
 </template>
 

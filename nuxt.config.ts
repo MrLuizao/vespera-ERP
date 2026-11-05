@@ -5,6 +5,13 @@ export default defineNuxtConfig({
     '@pinia/nuxt'
   ],
 
+  // Secretos de server-side (Nunca llegan al cliente).
+  // Override en producción: NUXT_GEMINI_API_KEY / NUXT_GEMINI_MODEL
+  runtimeConfig: {
+    geminiApiKey: '',
+    geminiModel: ''
+  },
+
   devtools: {
     enabled: false
   },

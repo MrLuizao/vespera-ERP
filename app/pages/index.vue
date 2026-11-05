@@ -10,7 +10,8 @@ if (tokenCookie.value && userCookie.value) {
 </script>
 
 <template>
-  <div class="min-h-screen flex items-center justify-center">
-    <div class="w-8 h-8 rounded-full border-2 border-primary-500 border-t-transparent animate-spin" />
+  <div class="min-h-screen glass-mesh-bg flex items-center justify-center gap-3" role="status">
+    <div aria-hidden="true" class="w-8 h-8 rounded-full border-2 border-primary-500 border-t-transparent animate-spin" />
+    <span>Abriendo Vespera…</span>
   </div>
 </template>

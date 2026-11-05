@@ -1,24 +1,23 @@
 <template>
-  <div class="max-w-5xl mx-auto">
+  <div class="min-w-0">
     <!-- Tarjeta de Sesión Activa (Abarcando el ancho total arriba) -->
-    <div class="w-full mt-4 mb-6 px-4 py-3 sm:px-5 sm:py-3.5 rounded-2xl bg-white/60 dark:bg-white/[0.08] backdrop-blur-2xl border border-white/60 dark:border-white/10 shadow-xs flex items-center justify-between flex-wrap gap-2.5">
-      <div class="flex items-center gap-2.5">
-        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+    <div class="w-full mb-6 py-3 flat-section flex items-center justify-between flex-wrap gap-3">
+      <div class="flex flex-wrap items-center gap-2.5">
         <span class="text-xs text-sage-600 dark:text-gray-400">Sesión:</span>
         <strong class="text-sm text-carbon-900 dark:text-white">{{ activeUser.name }}</strong>
-        <span class="text-[11px] px-2.5 py-0.5 rounded-full bg-primary-500/15 text-primary-600 dark:text-[#D4E157] font-semibold">
+        <span class="text-xs px-2.5 py-1 rounded-full status-success font-semibold">
           {{ activeUser.role }}
         </span>
       </div>
       <div class="text-xs text-sage-600 dark:text-gray-300 font-medium">
-        Participación Accionaria: <strong class="text-carbon-900 dark:text-white font-mono">{{ activeUser.equityPct }}%</strong>
+        Participación Accionaria: <strong class="text-highlighted tabular-nums">{{ activeUser.equityPct }}%</strong>
       </div>
     </div>
 
     <!-- Encabezado con Título e Icono -->
     <div class="mb-4 sm:mb-8 flex items-center justify-between flex-wrap gap-4">
       <div class="flex items-center gap-4">
-        <div class="w-11 h-11 shrink-0 rounded-full bg-white/60 dark:bg-white/[0.08] backdrop-blur-2xl flex items-center justify-center shadow-sm">
+        <div class="w-11 h-11 shrink-0 icon-tile flex items-center justify-center">
           <UIcon
             name="i-lucide-users"
             class="w-5 h-5 text-carbon-800 dark:text-gray-200"
@@ -39,7 +38,7 @@
         icon="i-lucide-plus"
         color="primary"
         size="lg"
-        class="hidden sm:inline-flex rounded-full cursor-pointer transition-transform active:scale-95 shadow-sm"
+        class="hidden sm:inline-flex action-create"
         @click="openCreateModal"
       >
         Nueva Solicitud
@@ -53,7 +52,7 @@
         color="primary"
         size="xl"
         block
-        class="w-full justify-center rounded-full cursor-pointer transition-transform active:scale-95 shadow-md py-3.5"
+        class="w-full justify-center action-create"
         @click="openCreateModal"
       >
         Nueva Solicitud
@@ -64,15 +63,14 @@
       <!-- ===================================================================== -->
       <!-- COLUMNA IZQUIERDA: Solicitudes de Gasto & Candado Mancomunado         -->
       <!-- ===================================================================== -->
-      <div class="lg:col-span-7">
+      <div class="lg:col-span-7 min-w-0">
         <UCard
-          class="rounded-[2rem]"
-          :ui="{ root: 'bg-white/60 dark:bg-white/[0.07] backdrop-blur-2xl ring-0 divide-y-0 shadow-lg', header: 'p-6 sm:px-7 sm:pt-7 sm:pb-0', body: 'p-6 sm:p-7' }"
+          :ui="{ root: 'glass-panel ring-0 divide-y-0', header: 'p-5 sm:p-6 pb-0', body: 'p-5 sm:p-6' }"
         >
           <template #header>
             <div class="flex items-center justify-between flex-wrap gap-3">
               <div class="flex items-center gap-3">
-                <div class="w-10 h-10 shrink-0 rounded-2xl bg-gradient-to-br from-[#E879F9] to-[#C084FC] flex items-center justify-center shadow-sm">
+                <div class="w-10 h-10 shrink-0 icon-tile flex items-center justify-center">
                   <UIcon
                     name="i-lucide-shield-check"
                     class="w-5 h-5 text-white"
@@ -90,15 +88,15 @@
             </div>
           </template>
 
-          <div class="space-y-4">
+          <p v-if="!cfoStore.filteredGovernanceRequests.length" class="py-6 text-muted">No hay solicitudes para esta sucursal. Puedes crear una nueva solicitud.</p>
+          <div class="divide-y divide-default">
             <div
               v-for="req in cfoStore.filteredGovernanceRequests"
               :key="req.id"
-              class="rounded-[1.5rem] bg-white/50 dark:bg-black/25 p-5 space-y-4 transition-all"
-              :class="req.requestedByPartnerId === currentUserId ? 'ring-1 ring-primary-500/30' : ''"
+              class="py-5 space-y-4"
             >
               <!-- 1. Encabezado de la Solicitud y Badges de Regla de Negocio -->
-              <div class="flex items-start justify-between gap-3">
+              <div class="flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <div class="flex items-center flex-wrap gap-2 mb-1.5">
                     <!-- Badge de Estado de Aprobación -->
@@ -111,7 +109,7 @@
                     </UBadge>
 
                     <!-- Badge de Sucursal -->
-                    <span class="text-xs text-sage-600 dark:text-gray-300 font-mono">
+                    <span class="text-xs text-muted">
                       {{ req.venueName }}
                     </span>
 
@@ -122,7 +120,7 @@
                       variant="subtle"
                       class="font-bold flex items-center gap-1"
                     >
-                      <UIcon name="i-lucide-pencil" class="w-3 h-3 text-primary-500 dark:text-[#D4E157]" />
+                      <UIcon name="i-lucide-pencil" class="w-4 h-4 text-primary" />
                       Tu Solicitud (Editable)
                     </UBadge>
                     <UBadge
@@ -146,14 +144,14 @@
                 </div>
 
                 <!-- Monto en Moneda Nacional -->
-                <span class="text-xl font-bold font-mono text-carbon-900 dark:text-white shrink-0">
+                <span class="text-[28px] font-semibold tabular-nums text-highlighted">
                   {{ formatCurrency(req.amountMxn) }}
                 </span>
               </div>
 
               <!-- 2. Matriz Informativa de Firmas de Socios (Transparencia Total) -->
               <div class="pt-2 pb-1 border-t border-black/[0.05] dark:border-white/[0.05]">
-                <p class="text-[11px] font-semibold uppercase tracking-wider text-sage-500 dark:text-gray-400 mb-2">
+                <p class="text-sm font-semibold text-muted mb-2">
                   Registro de Firmas Mancomunadas:
                 </p>
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -172,7 +170,7 @@
                       class="w-3.5 h-3.5 shrink-0"
                     />
                     <span class="truncate">{{ signer.partnerName.split(' ')[0] }}</span>
-                    <span v-if="signer.partnerId === currentUserId" class="text-[10px] font-bold text-primary-500 ml-auto">(Tú)</span>
+                    <span v-if="signer.partnerId === currentUserId" class="text-xs font-semibold text-primary ml-auto">(Tú)</span>
                   </div>
                 </div>
               </div>
@@ -238,7 +236,7 @@
                     <!-- Caso 2: Solicitud Pendiente pero el usuario logueado YA firmó -->
                     <div
                       v-else-if="getMySignerStatus(req) === 'APPROVED'"
-                      class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-[#D4E157] text-xs font-semibold"
+                      class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full status-success text-xs font-semibold"
                     >
                       <UIcon name="i-lucide-check-circle" class="w-3.5 h-3.5" />
                       <span>Has firmado digitalmente</span>
@@ -257,7 +255,7 @@
                   <!-- Caso 4: Solicitud ya Autorizada Globalmente -->
                   <div
                     v-else-if="req.status === 'APPROVED'"
-                    class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-[#D4E157] text-xs font-bold"
+                    class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full status-success text-xs font-semibold"
                   >
                     <UIcon name="i-lucide-check-check" class="w-4 h-4" />
                     <span>Autorizado SPEI</span>
@@ -281,14 +279,13 @@
       <!-- ===================================================================== -->
       <!-- COLUMNA DERECHA: Cap Table, Dividendos y Ficha Informativa             -->
       <!-- ===================================================================== -->
-      <div class="lg:col-span-5">
+      <div class="lg:col-span-5 min-w-0">
         <UCard
-          class="rounded-[2rem]"
-          :ui="{ root: 'bg-white/60 dark:bg-white/[0.07] backdrop-blur-2xl ring-0 divide-y-0 shadow-lg', header: 'p-6 sm:px-7 sm:pt-7 sm:pb-0', body: 'p-6 sm:p-7' }"
+          :ui="{ root: 'glass-panel ring-0 divide-y-0', header: 'p-5 sm:p-6 pb-0', body: 'p-5 sm:p-6' }"
         >
           <template #header>
             <div class="flex items-center gap-3">
-              <div class="w-10 h-10 shrink-0 rounded-2xl bg-gradient-to-br from-[#8B80F9] to-[#6C5CE7] flex items-center justify-center shadow-sm">
+              <div class="w-10 h-10 shrink-0 icon-tile flex items-center justify-center">
                 <UIcon
                   name="i-lucide-users"
                   class="w-5 h-5 text-white"
@@ -306,14 +303,14 @@
           </template>
 
           <!-- Aviso de Reglas de Gobernanza Activas -->
-          <div class="p-3.5 rounded-2xl bg-primary-500/[0.08] dark:bg-white/[0.04] border border-primary-500/20 dark:border-white/10 text-xs mb-4">
+          <div class="pb-4 flat-section text-sm mb-4">
             <div class="flex items-start gap-2.5">
-              <UIcon name="i-lucide-shield" class="w-4 h-4 text-primary-500 dark:text-[#D4E157] shrink-0 mt-0.5" />
+              <UIcon name="i-lucide-shield" class="w-4 h-4 text-primary shrink-0 mt-0.5" />
               <div>
                 <p class="font-bold text-carbon-900 dark:text-white">
                   Gobernanza & Segregación de Funciones
                 </p>
-                <p class="text-[11px] text-sage-600 dark:text-gray-300 mt-0.5 leading-relaxed">
+                <p class="text-sm text-muted mt-1 leading-relaxed">
                   Has iniciado sesión como <strong class="text-carbon-900 dark:text-white">{{ activeUser.name }}</strong>. Solo puedes editar y autorizar solicitudes asignadas a tu cuenta. La información de los demás socios es de consulta informativa.
                 </p>
               </div>
@@ -325,14 +322,14 @@
             <div
               v-for="p in cfoStore.partners"
               :key="p.id"
-              class="w-full flex items-center gap-3 rounded-2xl px-4 py-3.5 text-left transition-all"
+              class="w-full flex flex-wrap items-center gap-3 rounded-xl px-3 py-4 text-left"
               :class="p.id === currentUserId
-                ? 'bg-primary-500/10 dark:bg-[#D4E157]/10 ring-1 ring-primary-500/40 dark:ring-[#D4E157]/30'
-                : 'bg-white/50 dark:bg-black/25 opacity-90'"
+                ? 'status-success'
+                : 'flat-section'"
             >
               <div
                 class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs shrink-0"
-                :class="p.id === currentUserId ? 'bg-primary-500 text-white' : 'bg-[#D4E157] text-carbon-900'"
+                :class="p.id === currentUserId ? 'bg-royal-500 text-carbon-950' : 'bg-posyellow-400 text-carbon-950'"
               >
                 {{ p.avatarInitials }}
               </div>
@@ -344,13 +341,13 @@
                   </p>
                   <span
                     v-if="p.id === currentUserId"
-                    class="px-2 py-0.5 text-[10px] rounded-full bg-emerald-500 text-white font-bold"
+                    class="px-2 py-1 text-xs rounded-full bg-royal-500 text-carbon-950 font-semibold"
                   >
                     Tú
                   </span>
                   <span
                     v-else
-                    class="px-2 py-0.5 text-[10px] rounded-full bg-black/[0.04] dark:bg-white/[0.08] text-sage-500 dark:text-gray-400 font-medium"
+                    class="px-2 py-1 text-xs rounded-full bg-muted text-muted font-medium"
                   >
                     Informativo
                   </span>
@@ -361,10 +358,10 @@
               </div>
 
               <div class="text-right shrink-0">
-                <p class="text-sm font-bold font-mono text-posteal-600 dark:text-[#D4E157]">
+                <p class="text-base font-semibold tabular-nums text-primary">
                   {{ formatCurrency(Math.round(cfoStore.pnlSummary.netDistributableProfit * (p.equityPct / 100))) }}
                 </p>
-                <p class="text-[11px] text-sage-500 dark:text-gray-400">
+                <p class="text-xs text-muted">
                   Dividendo
                 </p>
               </div>
@@ -375,7 +372,7 @@
           <div class="mt-5 pt-4 border-t border-black/[0.05] dark:border-white/[0.05] space-y-2 text-xs">
             <div class="flex justify-between text-sage-600 dark:text-gray-300">
               <span>Saldo CUFIN Disponible:</span>
-              <span class="font-bold text-carbon-900 dark:text-white font-mono">$4,850,000 MXN</span>
+              <span class="font-bold text-highlighted financial-value">$4,850,000 MXN</span>
             </div>
             <div class="flex justify-between text-sage-600 dark:text-gray-300">
               <span>Retención Art. 140 LISR:</span>
@@ -395,26 +392,24 @@
     <!-- ========================================================================= -->
     <!-- MODAL: Editar Solicitud Propia                                            -->
     <!-- ========================================================================= -->
-    <UModal v-model:open="isEditModalOpen" :ui="{ content: 'rounded-[2rem] bg-white/95 dark:bg-carbon-900/95 backdrop-blur-2xl ring-0 shadow-2xl max-w-lg' }">
-      <template #content>
-        <div class="p-7 space-y-5">
+    <UModal v-model:open="isEditModalOpen" title="Editar Tu Solicitud de Gasto" description="Modifica los parámetros antes de que concluya la votación" :close="false" :ui="{ content: 'glass-overlay ring-0 max-w-[560px]', header: 'sr-only', body: 'p-0' }">
+      <template #body>
+        <div class="p-5 sm:p-6 space-y-5">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
               <div class="w-10 h-10 rounded-2xl bg-primary-500/15 flex items-center justify-center">
                 <UIcon name="i-lucide-pencil" class="w-5 h-5 text-primary-500" />
               </div>
               <div>
-                <h3 class="font-bold text-carbon-900 dark:text-white text-base">
+                <h3 id="edit-title" class="font-semibold text-highlighted text-xl">
                   Editar Tu Solicitud de Gasto
                 </h3>
-                <p class="text-xs text-sage-600 dark:text-gray-400">
+                <p id="edit-description" class="text-sm text-muted">
                   Modifica los parámetros antes de que concluya la votación
                 </p>
               </div>
             </div>
-            <button type="button" class="text-sage-400 hover:text-carbon-900 dark:hover:text-white cursor-pointer" @click="isEditModalOpen = false">
-              <UIcon name="i-lucide-x" class="w-5 h-5" />
-            </button>
+            <UButton type="button" color="neutral" variant="ghost" icon="i-lucide-x" aria-label="Cerrar edición" class="min-w-11" @click="isEditModalOpen = false" />
           </div>
 
           <div class="space-y-4">
@@ -455,26 +450,24 @@
     <!-- ========================================================================= -->
     <!-- MODAL: Crear Nueva Solicitud de Gasto                                     -->
     <!-- ========================================================================= -->
-    <UModal v-model:open="isCreateModalOpen" :ui="{ content: 'rounded-[2rem] bg-white/95 dark:bg-carbon-900/95 backdrop-blur-2xl ring-0 shadow-2xl max-w-lg' }">
-      <template #content>
-        <div class="p-7 space-y-5">
+    <UModal v-model:open="isCreateModalOpen" title="Nueva Solicitud de Gasto Mancomunado" :description="`Se registrará a tu nombre (${activeUser.name})`" :close="false" :ui="{ content: 'glass-overlay ring-0 max-w-[560px]', header: 'sr-only', body: 'p-0' }">
+      <template #body>
+        <div class="p-5 sm:p-6 space-y-5">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
               <div class="w-10 h-10 rounded-2xl bg-emerald-500/15 flex items-center justify-center">
                 <UIcon name="i-lucide-plus-circle" class="w-5 h-5 text-emerald-500" />
               </div>
               <div>
-                <h3 class="font-bold text-carbon-900 dark:text-white text-base">
+                <h3 id="create-title" class="font-semibold text-highlighted text-xl">
                   Nueva Solicitud de Gasto Mancomunado
                 </h3>
-                <p class="text-xs text-sage-600 dark:text-gray-400">
+                <p id="create-description" class="text-sm text-muted">
                   Se registrará a tu nombre ({{ activeUser.name }})
                 </p>
               </div>
             </div>
-            <button type="button" class="text-sage-400 hover:text-carbon-900 dark:hover:text-white cursor-pointer" @click="isCreateModalOpen = false">
-              <UIcon name="i-lucide-x" class="w-5 h-5" />
-            </button>
+            <UButton type="button" color="neutral" variant="ghost" icon="i-lucide-x" aria-label="Cerrar nueva solicitud" class="min-w-11" @click="isCreateModalOpen = false" />
           </div>
 
           <div class="space-y-4">

@@ -1,31 +1,26 @@
-<template>
-  <Teleport to="body">
-    <Transition
-      enter-active-class="transition-opacity duration-200"
-      enter-from-class="opacity-0"
-      enter-to-class="opacity-100"
-      leave-active-class="transition-opacity duration-200"
-      leave-from-class="opacity-100"
-      leave-to-class="opacity-0"
-    >
-      <div
-        v-if="loaderState.isLoading"
-        class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
-      >
-        <div class="bg-white/90 dark:bg-carbon-900/90 backdrop-blur-2xl rounded-[2rem] p-8 shadow-2xl flex flex-col items-center gap-4 min-w-[220px]">
-          <div class="relative">
-            <div class="w-16 h-16 rounded-full border-4 border-primary-200 dark:border-primary-800" />
-            <div class="absolute inset-0 w-16 h-16 rounded-full border-4 border-transparent border-t-primary-500 animate-spin" />
-          </div>
-          <p class="text-carbon-900 dark:text-gray-200 font-semibold text-center text-sm">
-            {{ loaderState.message }}
-          </p>
-        </div>
-      </div>
-    </Transition>
-  </Teleport>
-</template>
-
 <script setup lang="ts">
 const { loaderState } = useLoader()
 </script>
+
+<template>
+  <UModal
+    :open="loaderState.isLoading"
+    :dismissible="false"
+    :close="false"
+    :title="loaderState.message"
+    description="Espera a que termine la operación."
+    :ui="{ overlay: 'z-60 bg-black/45', content: 'z-60 glass-overlay ring-0 max-w-sm', header: 'sr-only', body: 'p-0' }"
+  >
+    <template #body>
+      <div class="p-6 flex flex-col items-center gap-4" aria-busy="true">
+        <div class="relative" aria-hidden="true">
+          <div class="size-14 rounded-full border-4 border-royal-200 dark:border-royal-800" />
+          <div class="absolute inset-0 size-14 rounded-full border-4 border-transparent border-t-primary animate-spin" />
+        </div>
+        <p id="global-loader-message" role="status" aria-live="polite" class="font-semibold text-center text-sm">
+          {{ loaderState.message }}
+        </p>
+      </div>
+    </template>
+  </UModal>
+</template>

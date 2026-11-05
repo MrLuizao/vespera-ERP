@@ -1,8 +1,8 @@
 <template>
-  <div class="max-w-5xl mx-auto">
+  <div class="min-w-0">
     <div class="mb-8 mt-5 flex items-center justify-between flex-wrap gap-4">
       <div class="flex items-center gap-4">
-        <div class="w-11 h-11 shrink-0 rounded-full bg-white/60 dark:bg-white/[0.08] backdrop-blur-2xl flex items-center justify-center shadow-sm">
+        <div class="w-11 h-11 shrink-0 icon-tile flex items-center justify-center">
           <UIcon
             name="i-lucide-trending-up"
             class="w-5 h-5 text-carbon-800 dark:text-gray-200"
@@ -32,26 +32,26 @@
 
     <!-- KPI Cards Superiores con efecto Glass sin bordes blancos -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
-      <div class="rounded-[2rem] p-6 bg-white/60 dark:bg-white/[0.07] backdrop-blur-2xl shadow-lg">
+      <div class="glass-panel p-5 sm:p-6 min-w-0">
         <div class="flex items-start justify-between gap-3">
           <div>
             <p class="text-xs font-medium text-sage-600 dark:text-gray-300 mb-1">
               Mi Dividendo ({{ cfoStore.currentPartner.equityPct }}%)
             </p>
-            <p class="text-3xl font-bold tracking-tight text-carbon-900 dark:text-[#D4E157]">
+            <p class="text-[28px] font-semibold tracking-tight text-highlighted tabular-nums">
               {{ formatCurrency(cfoStore.partnerDividendMxn) }}
             </p>
           </div>
-          <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#8B80F9] to-[#6C5CE7] flex items-center justify-center shrink-0 shadow-md shadow-indigo-500/20">
+          <div class="w-10 h-10 icon-tile flex items-center justify-center shrink-0">
             <UIcon name="i-lucide-wallet" class="w-5 h-5 text-white" />
           </div>
         </div>
-        <p class="text-xs mt-3 text-emerald-600 dark:text-[#D4E157] font-semibold">
+        <p class="text-sm mt-3 text-primary font-semibold">
           ↑ +{{ cfoStore.activeFinancials.growthVsLastMonthPct }}% vs mes anterior
         </p>
       </div>
 
-      <div class="rounded-[2rem] p-6 bg-white/60 dark:bg-white/[0.07] backdrop-blur-2xl shadow-lg">
+      <div class="glass-panel p-5 sm:p-6 min-w-0">
         <div class="flex items-start justify-between gap-3">
           <div>
             <p class="text-xs font-medium text-sage-600 dark:text-gray-300 mb-1">
@@ -61,7 +61,7 @@
               {{ formatCurrency(cfoStore.pnlSummary.netDistributableProfit) }}
             </p>
           </div>
-          <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#4CD97B] to-[#2BB656] flex items-center justify-center shrink-0 shadow-md shadow-emerald-500/20">
+          <div class="w-10 h-10 icon-tile flex items-center justify-center shrink-0">
             <UIcon name="i-lucide-trending-up" class="w-5 h-5 text-white" />
           </div>
         </div>
@@ -70,7 +70,7 @@
         </p>
       </div>
 
-      <div class="rounded-[2rem] p-6 bg-white/60 dark:bg-white/[0.07] backdrop-blur-2xl shadow-lg">
+      <div class="glass-panel p-5 sm:p-6 min-w-0">
         <div class="flex items-start justify-between gap-3">
           <div>
             <p class="text-xs font-medium text-sage-600 dark:text-gray-300 mb-1">
@@ -80,7 +80,7 @@
               {{ formatCurrency(cfoStore.activeFinancials.weekendProjection.projectedRevenue) }}
             </p>
           </div>
-          <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#E879F9] to-[#C084FC] flex items-center justify-center shrink-0 shadow-md shadow-purple-500/20">
+          <div class="w-10 h-10 icon-tile flex items-center justify-center shrink-0">
             <UIcon name="i-lucide-sparkles" class="w-5 h-5 text-white" />
           </div>
         </div>
@@ -91,14 +91,14 @@
     </div>
 
     <!-- Cascada de Estado de Resultados (P&L) & Semáforo en UCard Glassmorphism sin bordes blancos -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] gap-6">
       <UCard
-        class="rounded-[2rem]"
-        :ui="{ root: 'bg-white/60 dark:bg-white/[0.07] backdrop-blur-2xl ring-0 divide-y-0 shadow-lg', header: 'p-6 sm:px-7 sm:pt-7 sm:pb-0', body: 'p-6 sm:p-7' }"
+        class="min-w-0"
+        :ui="{ root: 'glass-panel ring-0 divide-y-0', header: 'p-5 sm:p-6 pb-0', body: 'p-5 sm:p-6' }"
       >
         <template #header>
           <div class="flex items-center gap-3">
-            <div class="w-10 h-10 shrink-0 rounded-2xl bg-gradient-to-br from-[#8B80F9] to-[#6C5CE7] flex items-center justify-center shadow-sm">
+            <div class="w-10 h-10 shrink-0 icon-tile flex items-center justify-center">
               <UIcon
                 name="i-lucide-bar-chart-3"
                 class="w-5 h-5 text-white"
@@ -115,60 +115,60 @@
           </div>
         </template>
 
-        <div class="rounded-2xl bg-white/50 dark:bg-black/25 divide-y divide-black/[0.05] dark:divide-white/[0.05] overflow-hidden">
-          <div class="flex justify-between items-center px-4 py-3.5">
-            <span class="text-xs font-semibold uppercase tracking-wider text-sage-600 dark:text-gray-300">
+        <div class="divide-y divide-default">
+          <div class="financial-row py-3.5">
+            <span class="text-sm font-semibold text-muted">
               (+) Ventas Brutas
             </span>
-            <span class="font-semibold text-carbon-900 dark:text-white font-mono">
+            <span class="font-semibold text-highlighted financial-value">
               {{ formatCurrency(cfoStore.pnlSummary.grossRevenue) }}
             </span>
           </div>
 
-          <div class="flex justify-between items-center px-4 py-3.5">
-            <span class="text-xs font-semibold uppercase tracking-wider text-sage-600 dark:text-gray-300">
+          <div class="financial-row py-3.5">
+            <span class="text-sm font-semibold text-muted">
               (-) Costo Insumos & Barra
             </span>
-            <span class="font-semibold text-error-600 dark:text-error-400 font-mono">
+            <span class="font-semibold text-error-600 dark:text-error-400 financial-value">
               -{{ formatCurrency(cfoStore.pnlSummary.totalVariableCosts) }}
             </span>
           </div>
 
-          <div class="flex justify-between items-center px-4 py-3.5">
-            <span class="text-xs font-semibold uppercase tracking-wider text-sage-600 dark:text-gray-300">
+          <div class="financial-row py-3.5">
+            <span class="text-sm font-semibold text-muted">
               (-) Renta, Nómina y Servicios
             </span>
-            <span class="font-semibold text-error-600 dark:text-error-400 font-mono">
+            <span class="font-semibold text-error-600 dark:text-error-400 financial-value">
               -{{ formatCurrency(cfoStore.pnlSummary.totalFixedCosts) }}
             </span>
           </div>
 
-          <div class="flex justify-between items-center px-4 py-3.5">
-            <span class="text-xs font-semibold uppercase tracking-wider text-sage-600 dark:text-gray-300">
+          <div class="financial-row py-3.5">
+            <span class="text-sm font-semibold text-muted">
               (-) Gastos Extraordinarios
             </span>
-            <span class="font-semibold text-carbon-900 dark:text-white font-mono">
+            <span class="font-semibold text-highlighted financial-value">
               -{{ formatCurrency(cfoStore.pnlSummary.approvedExtraExpenses) }}
             </span>
           </div>
 
           <div
             v-if="cfoStore.pnlSummary.recoveredSavingsFromSat > 0"
-            class="flex justify-between items-center px-4 py-3.5 bg-posteal-500/10"
+            class="financial-row py-3.5 status-success"
           >
-            <span class="text-xs font-semibold uppercase tracking-wider text-posteal-600 dark:text-posteal-400">
+            <span class="text-sm font-semibold text-primary">
               (+) Recuperado Auditoría SAT
             </span>
-            <span class="font-bold text-posteal-600 dark:text-posteal-400 font-mono">
+            <span class="font-bold text-primary financial-value">
               +{{ formatCurrency(cfoStore.pnlSummary.recoveredSavingsFromSat) }}
             </span>
           </div>
 
-          <div class="flex justify-between items-center px-4 py-4 bg-primary-500/10 dark:bg-[#D4E157]/10">
+          <div class="financial-row px-3 py-4 status-success rounded-xl">
             <span class="text-sm font-bold text-carbon-900 dark:text-white">
               (=) Utilidad Neta Libre
             </span>
-            <span class="font-bold text-primary-600 dark:text-[#D4E157] font-mono text-lg">
+            <span class="font-bold text-primary tabular-nums text-lg">
               {{ formatCurrency(cfoStore.pnlSummary.netDistributableProfit) }}
             </span>
           </div>
@@ -177,12 +177,12 @@
 
       <!-- Semáforo de Costos Operativos -->
       <UCard
-        class="rounded-[2rem]"
-        :ui="{ root: 'bg-white/60 dark:bg-white/[0.07] backdrop-blur-2xl ring-0 divide-y-0 shadow-lg', header: 'p-6 sm:px-7 sm:pt-7 sm:pb-0', body: 'p-6 sm:p-7' }"
+        class="min-w-0"
+        :ui="{ root: 'glass-panel ring-0 divide-y-0', header: 'p-5 sm:p-6 pb-0', body: 'p-5 sm:p-6' }"
       >
         <template #header>
           <div class="flex items-center gap-3">
-            <div class="w-10 h-10 shrink-0 rounded-2xl bg-gradient-to-br from-[#4CD97B] to-[#2BB656] flex items-center justify-center shadow-sm">
+            <div class="w-10 h-10 shrink-0 icon-tile flex items-center justify-center">
               <UIcon
                 name="i-lucide-gauge"
                 class="w-5 h-5 text-white"
@@ -200,8 +200,8 @@
         </template>
 
         <div class="space-y-4">
-          <div class="rounded-2xl bg-white/50 dark:bg-black/25 p-5">
-            <div class="flex items-center justify-between mb-2">
+          <div class="flat-section pb-5">
+            <div class="financial-row mb-2">
               <span class="text-sm font-semibold text-carbon-900 dark:text-white">
                 Costo de Cocina (Food Cost)
               </span>
@@ -214,14 +214,14 @@
             </div>
             <div class="h-3 w-full rounded-full bg-black/[0.06] dark:bg-black/40 overflow-hidden">
               <div
-                class="h-full rounded-full bg-primary-500 dark:bg-[#D4E157]"
+                aria-hidden="true" class="h-full rounded-full bg-royal-700 dark:bg-royal-300"
                 :style="{ width: `${Math.min(100, cfoStore.activeFinancials.variableCosts.foodCostPct * 2.2)}%` }"
               />
             </div>
           </div>
 
-          <div class="rounded-2xl bg-white/50 dark:bg-black/25 p-5">
-            <div class="flex items-center justify-between mb-2">
+          <div class="flat-section pb-5">
+            <div class="financial-row mb-2">
               <span class="text-sm font-semibold text-carbon-900 dark:text-white">
                 Costo de Barra & Cava
               </span>
@@ -234,7 +234,7 @@
             </div>
             <div class="h-3 w-full rounded-full bg-black/[0.06] dark:bg-black/40 overflow-hidden">
               <div
-                class="h-full rounded-full bg-posteal-500"
+                aria-hidden="true" class="h-full rounded-full bg-brand-orange"
                 :style="{ width: `${Math.min(100, cfoStore.activeFinancials.variableCosts.beverageCostPct * 2.5)}%` }"
               />
             </div>
@@ -246,7 +246,7 @@
             size="xl"
             color="primary"
             icon="i-lucide-file-search"
-            class="rounded-full mt-2 cursor-pointer transition-transform hover:scale-[1.01]"
+            class="mt-2 whitespace-normal text-center justify-center"
           >
             Auditar Facturas con Sobrecosto
           </UButton>
@@ -260,7 +260,7 @@
     <div class="mt-8 space-y-6">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 shrink-0 rounded-2xl bg-gradient-to-br from-[#67B8F7] to-[#3B9AE8] flex items-center justify-center shadow-md shadow-sky-500/20">
+          <div class="w-10 h-10 shrink-0 icon-tile flex items-center justify-center">
             <UIcon name="i-lucide-calendar-check-2" class="w-5 h-5 text-white" />
           </div>
           <div>
@@ -286,13 +286,13 @@
       <!-- Tarjetas de Métricas de Reservas: RevPASH + Ocupación + Atribución -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
         <!-- Tarjeta 1: RevPASH Detallado -->
-        <div class="rounded-[2rem] p-6 bg-white/60 dark:bg-white/[0.07] backdrop-blur-2xl shadow-lg flex flex-col justify-between">
+        <div class="glass-panel min-w-0 p-5 sm:p-6 flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between mb-2">
-              <span class="text-xs font-semibold uppercase text-sage-600 dark:text-gray-300">
+              <span class="text-sm font-semibold text-muted">
                 Fórmula RevPASH
               </span>
-              <UIcon name="i-lucide-calculator" class="w-4 h-4 text-sky-500" />
+              <UIcon name="i-lucide-calculator" class="w-4 h-4 text-primary" />
             </div>
             <p class="text-2xl font-bold text-carbon-900 dark:text-white">
               {{ formatCurrency(cfoStore.revpashSummary.revpashMxn) }}
@@ -314,13 +314,13 @@
         </div>
 
         <!-- Tarjeta 2: Atribución de Canales UTM -->
-        <div class="rounded-[2rem] p-6 bg-white/60 dark:bg-white/[0.07] backdrop-blur-2xl shadow-lg flex flex-col justify-between">
+        <div class="glass-panel min-w-0 p-5 sm:p-6 flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between mb-2">
-              <span class="text-xs font-semibold uppercase text-sage-600 dark:text-gray-300">
+              <span class="text-sm font-semibold text-muted">
                 Atribución UTM de Reservas
               </span>
-              <UIcon name="i-lucide-pie-chart" class="w-4 h-4 text-purple-500" />
+              <UIcon name="i-lucide-pie-chart" class="w-4 h-4 text-primary" />
             </div>
             <p class="text-2xl font-bold text-carbon-900 dark:text-white">
               {{ cfoStore.utmSummary.instagram.pct }}% <span class="text-xs font-normal text-sage-600 dark:text-gray-300">vía Instagram</span>
@@ -332,35 +332,35 @@
           <div class="mt-4 pt-3 border-t border-black/[0.05] dark:border-white/[0.05] space-y-1.5 text-xs">
             <div class="flex justify-between items-center">
               <span class="flex items-center gap-1.5 text-sage-600 dark:text-gray-300">
-                <span class="w-2 h-2 rounded-full bg-pink-500" /> Instagram:
+                <span class="w-2 h-2 rounded-full bg-brand-orange" /> Instagram:
               </span>
-              <span class="font-semibold text-carbon-900 dark:text-white font-mono">{{ formatCurrency(cfoStore.utmSummary.instagram.revenueMxn) }} ({{ cfoStore.utmSummary.instagram.covers }} covers)</span>
+              <span class="font-semibold text-highlighted financial-value">{{ formatCurrency(cfoStore.utmSummary.instagram.revenueMxn) }} ({{ cfoStore.utmSummary.instagram.covers }} covers)</span>
             </div>
             <div class="flex justify-between items-center">
               <span class="flex items-center gap-1.5 text-sage-600 dark:text-gray-300">
-                <span class="w-2 h-2 rounded-full bg-blue-500" /> Google Maps:
+                <span class="w-2 h-2 rounded-full bg-posyellow-400" /> Google Maps:
               </span>
-              <span class="font-semibold text-carbon-900 dark:text-white font-mono">{{ formatCurrency(cfoStore.utmSummary.googleMaps.revenueMxn) }} ({{ cfoStore.utmSummary.googleMaps.covers }} covers)</span>
+              <span class="font-semibold text-highlighted financial-value">{{ formatCurrency(cfoStore.utmSummary.googleMaps.revenueMxn) }} ({{ cfoStore.utmSummary.googleMaps.covers }} covers)</span>
             </div>
             <div class="flex justify-between items-center">
               <span class="flex items-center gap-1.5 text-sage-600 dark:text-gray-300">
                 <span class="w-2 h-2 rounded-full bg-emerald-500" /> Directo / Web:
               </span>
-              <span class="font-semibold text-carbon-900 dark:text-white font-mono">{{ formatCurrency(cfoStore.utmSummary.direct.revenueMxn) }} ({{ cfoStore.utmSummary.direct.covers }} covers)</span>
+              <span class="font-semibold text-highlighted financial-value">{{ formatCurrency(cfoStore.utmSummary.direct.revenueMxn) }} ({{ cfoStore.utmSummary.direct.covers }} covers)</span>
             </div>
           </div>
         </div>
 
         <!-- Tarjeta 3: Margen de Contribución de Reservas -->
-        <div class="rounded-[2rem] p-6 bg-white/60 dark:bg-white/[0.07] backdrop-blur-2xl shadow-lg flex flex-col justify-between">
+        <div class="glass-panel min-w-0 p-5 sm:p-6 flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between mb-2">
-              <span class="text-xs font-semibold uppercase text-sage-600 dark:text-gray-300">
+              <span class="text-sm font-semibold text-muted">
                 Margen Contribución VIP
               </span>
               <UIcon name="i-lucide-coins" class="w-4 h-4 text-emerald-500" />
             </div>
-            <p class="text-2xl font-bold text-carbon-900 dark:text-[#D4E157]">
+            <p class="text-[28px] font-semibold text-highlighted tabular-nums">
               {{ formatCurrency(cfoStore.activeFinancials.weekendProjection.projectedNetContribution) }}
             </p>
             <p class="text-xs text-sage-600 dark:text-gray-300 mt-1">
@@ -370,11 +370,11 @@
           <div class="mt-4 pt-3 border-t border-black/[0.05] dark:border-white/[0.05] space-y-1 text-xs text-sage-600 dark:text-gray-300">
             <div class="flex justify-between">
               <span>Ingreso Proyectado:</span>
-              <span class="font-semibold text-carbon-900 dark:text-white font-mono">{{ formatCurrency(cfoStore.activeFinancials.weekendProjection.projectedRevenue) }}</span>
+              <span class="font-semibold text-highlighted financial-value">{{ formatCurrency(cfoStore.activeFinancials.weekendProjection.projectedRevenue) }}</span>
             </div>
             <div class="flex justify-between">
               <span>Prime Cost (49%):</span>
-              <span class="font-semibold text-error-600 dark:text-error-400 font-mono">-{{ formatCurrency(cfoStore.activeFinancials.weekendProjection.projectedRevenue * 0.49) }}</span>
+              <span class="font-semibold text-error-600 dark:text-error-400 financial-value">-{{ formatCurrency(cfoStore.activeFinancials.weekendProjection.projectedRevenue * 0.49) }}</span>
             </div>
           </div>
         </div>
@@ -382,13 +382,13 @@
 
       <!-- Tabla / Cards de Desglose por Zona: Cava, Terraza, Salón -->
       <UCard
-        class="rounded-[2rem]"
-        :ui="{ root: 'bg-white/60 dark:bg-white/[0.07] backdrop-blur-2xl ring-0 divide-y-0 shadow-lg', header: 'p-6 sm:px-7 sm:pt-7 sm:pb-3', body: 'p-6 sm:p-7' }"
+        class="min-w-0"
+        :ui="{ root: 'glass-panel ring-0 divide-y-0', header: 'p-5 sm:p-6 pb-0', body: 'p-5 sm:p-6' }"
       >
         <template #header>
           <div class="flex items-center justify-between flex-wrap gap-2">
             <div class="flex items-center gap-3">
-              <div class="w-9 h-9 rounded-2xl bg-gradient-to-br from-[#8B80F9] to-[#635BFF] flex items-center justify-center shadow-xs">
+              <div class="w-10 h-10 icon-tile flex items-center justify-center">
                 <UIcon name="i-lucide-utensils-crossed" class="w-4 h-4 text-white" />
               </div>
               <p class="font-semibold text-carbon-900 dark:text-white">
@@ -403,9 +403,9 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <!-- Cava Privada -->
-          <div class="rounded-2xl p-4 bg-white/50 dark:bg-black/25 border border-white/5 space-y-3">
+          <div class="flat-section py-4 space-y-3 min-w-0">
             <div class="flex items-center justify-between">
-              <span class="text-xs font-bold text-amber-500 uppercase tracking-wider">Cava Privada</span>
+              <span class="text-sm font-semibold text-[var(--warning-text)]">Cava Privada</span>
               <UBadge color="warning" variant="subtle" size="sm">Ticket $2,200</UBadge>
             </div>
             <p class="text-xl font-bold text-carbon-900 dark:text-white">
@@ -424,9 +424,9 @@
           </div>
 
           <!-- Terraza Fuego -->
-          <div class="rounded-2xl p-4 bg-white/50 dark:bg-black/25 border border-white/5 space-y-3">
+          <div class="flat-section py-4 space-y-3 min-w-0">
             <div class="flex items-center justify-between">
-              <span class="text-xs font-bold text-orange-500 uppercase tracking-wider">Terraza & Rooftop</span>
+              <span class="text-sm font-semibold text-[var(--attention-text)]">Terraza & Rooftop</span>
               <UBadge color="primary" variant="subtle" size="sm">Ticket $1,800</UBadge>
             </div>
             <p class="text-xl font-bold text-carbon-900 dark:text-white">
@@ -445,9 +445,9 @@
           </div>
 
           <!-- Salón Principal -->
-          <div class="rounded-2xl p-4 bg-white/50 dark:bg-black/25 border border-white/5 space-y-3">
+          <div class="flat-section py-4 space-y-3 min-w-0">
             <div class="flex items-center justify-between">
-              <span class="text-xs font-bold text-sky-500 uppercase tracking-wider">Salón Principal</span>
+              <span class="text-sm font-semibold text-primary">Salón Principal</span>
               <UBadge color="neutral" variant="subtle" size="sm">Ticket $1,400</UBadge>
             </div>
             <p class="text-xl font-bold text-carbon-900 dark:text-white">

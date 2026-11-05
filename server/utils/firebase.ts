@@ -3,7 +3,7 @@ import { resolve } from 'node:path'
 import { initializeApp, getApps, cert, type App } from 'firebase-admin/app'
 import { getFirestore, type Firestore } from 'firebase-admin/firestore'
 import { getAuth, type Auth } from 'firebase-admin/auth'
-import type { StoredReservation } from './reservations'
+import type { StoredReservation, ZoneId } from './reservations'
 
 let firebaseApp: App | null = null
 let firestoreDb: Firestore | null = null
@@ -13,8 +13,9 @@ export function getFirebaseApp(): App | null {
   if (firebaseApp) return firebaseApp
 
   const existingApps = getApps()
-  if (existingApps.length > 0) {
-    firebaseApp = existingApps[0]
+  const existingApp = existingApps[0]
+  if (existingApp) {
+    firebaseApp = existingApp
     return firebaseApp
   }
 
